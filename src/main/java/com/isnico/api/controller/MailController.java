@@ -4,13 +4,13 @@ import java.util.concurrent.TimeUnit;
 
 import javax.validation.constraints.Pattern;
 
-import com.isnico.api.consts.CacheConst;
-import com.isnico.api.consts.SystemConst;
-import com.isnico.api.domain.vo.ResponseCode;
-import com.isnico.api.domain.vo.ResponseVo;
-import com.isnico.api.utils.SmsUtils;
-import com.isnico.api.component.CacheComponent;
-import com.isnico.api.component.MailComponent;
+import com.isnico.api.component.MailUtil;
+import com.isnico.api.component.RedisUtil;
+import com.isnico.api.consts.AppConst;
+import com.isnico.api.enums.ResultCode;
+import com.isnico.api.model.Result;
+import com.isnico.api.util.StringUtil;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,41 +22,32 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
 @RestController
-@RequestMapping("/main")
+@RequestMapping("/api/v1/mail")
 @Validated
+@Api(tags = "Mail")
 public class MailController {
 
 	@Autowired
-	private MailComponent mailComponent;
-	
+	private MailUtil mailUtil;
+
 	@Autowired
-	private CacheComponent cacheComponent;
-	
-	@ApiOperation(value = "发送业务邮件")
-	@PostMapping("/business/send")
-	public ResponseVo<String> send(
-			@ApiParam(value = "账户", required = true) @Pattern(regexp = "^\\w+((-\\w+)|(\\.\\w+))*\\@[A-Za-z0-9]+((\\.|-)[A-Za-z0-9]+)*\\.[A-Za-z0-9]+$", message = "不符合邮箱格式") @RequestParam String account,
-			@ApiParam(value = "类型，1：注册，2：登录", required = true) @RequestParam int type
+	private RedisUtil redisUtil;
+
+	@ApiOperation(value = "发送邮件")
+	@PostMapping
+	public Result<?> send(
+			@ApiParam(value = "账户", required = true)
+			@Pattern(regexp = AppConst.REGEX_EMAIL, message = "不符合邮箱格式")
+			@RequestParam String email
 			){
-		ResponseCode code = null;
-		String authCode = SmsUtils.createCode(SystemConst.MAIL_AUTH_CODE_LENGTH);
-		boolean success = mailComponent.sendSimpleMail(account, "Trap Register Auth Code Mail !", "Auth Code: " + authCode);
+		String code = StringUtil.random(AppConst.MAIL_AUTH_CODE_LENGTH);
+		boolean success = mailUtil.sendSimpleMail(email, "NicoNicoNi! Register Auth Code Mail !", "Auth Code: " + code);
 		if(success) {
-			if(type == 1) {
-				cacheComponent.setEx(CacheConst.TRAP_USER_REGISTER_AUTH_CODE + account, authCode, 3L, TimeUnit.MINUTES);
-			}else {
-				cacheComponent.setEx(CacheConst.TRAP_USER_LOGIN_AUTH_CODE + account, authCode, 3L, TimeUnit.MINUTES);
-			}
-			
-			code = ResponseCode.SUCCESS;
-		}else {
-			code = ResponseCode.ERROR;
+			redisUtil.set(AppConst.USER_REGISTER_AUTH_CODE + email, code, 5L, TimeUnit.MINUTES);
+			return Result.ok();
 		}
-		return new ResponseVo<>(code);
+		return Result.fail(ResultCode.ERROR);
 	}
-	
-	
-	
-	
+
 	
 }

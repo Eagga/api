@@ -17,18 +17,18 @@ public class SwaggerConfig {
     @Bean
     public Docket managerDocument() {
         return new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo())
-                .groupName("simple")
+                .groupName("ratel")
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("org.nico.trap.controller"))
+                .apis(RequestHandlerSelectors.basePackage("com.isnico.api.controller"))
                 .paths(PathSelectors.any())
                 .build();
     }
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("Trap")
-                .description("The game is played in the form of dialogue, allowing the user to select different options to enter different scenes, and then the whole process is outlined as animation or fiction for the player to save!")
-                .version("1.0.2")
+                .title("Ratel")
+                .description("ratel")
+                .version("v1.0.0")
                 .build();
     }
 }

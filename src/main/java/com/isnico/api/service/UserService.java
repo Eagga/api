@@ -1,95 +1,31 @@
 package com.isnico.api.service;
 
-import java.util.List;
-
-import com.isnico.api.domain.po.User;
-import com.isnico.api.domain.vo.user.UserRestVo;
+import com.isnico.api.consts.AppConst;
+import com.isnico.api.enums.ResultCode;
+import com.isnico.api.exception.BusinessException;
 import com.isnico.api.mapper.UserMapper;
-import org.apache.ibatis.annotations.Param;
-import org.nico.ourbatis.entity.Page;
+import com.isnico.api.model.po.User;
+import com.isnico.api.model.vo.UserResp;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserService{
-	
-	@Autowired
-	private UserMapper userMapper;
-	
-	public User selectById(String key) {
-		return userMapper.selectById(key);
-	}
+public class UserService {
 
-	public User selectEntity(User condition) {
-		return userMapper.selectEntity(condition);
-	}
+    @Autowired
+    private UserMapper userMapper;
 
-	public List<User> selectList(User condition) {
-		return userMapper.selectList(condition);
-	}
-
-	public long selectCount(Object condition) {
-		return userMapper.selectCount(condition);
-	}
-
-	public List<User> selectPage(Page<Object> page) {
-		return userMapper.selectPage(page);
-	}
-
-	public String selectId(User condition) {
-		return userMapper.selectId(condition);
-	}
-
-	public List<String> selectIds(User condition) {
-		return userMapper.selectIds(condition);
-	}
-
-	public int insert(User entity) {
-		return userMapper.insert(entity);
-	}
-
-	public int insertSelective(User entity) {
-		return userMapper.insertSelective(entity);
-	}
-
-	public int insertBatch(List<User> list) {
-		return userMapper.insertBatch(list);
-	}
-
-	public int update(User entity) {
-		return userMapper.update(entity);
-	}
-
-	public int updateSelective(User entity) {
-		return userMapper.updateSelective(entity);
-	}
-
-	public int updateBatch(List<User> list) {
-		return userMapper.updateBatch(list);
-	}
-
-	public int delete(User condition) {
-		return userMapper.delete(condition);
-	}
-
-	public int deleteById(String key) {
-		return userMapper.deleteById(key);
-	}
-
-	public int deleteBatch(List<String> list) {
-		return userMapper.deleteBatch(list);
-	}
-
-	/**
-	 * 通过userId查询用户简单信息
-	 * 	- 头像
-	 * 	- 昵称
-	 * 
-	 * @param userId 用户Id
-	 * @return {@link UserRestVo}
-	 */
-	public UserRestVo selectRestUseInfo(String userId) {
-		return userMapper.selectRestUseInfo(userId);
-	}
-	
+    public UserResp getUserInfo(Long id){
+        User cond = new User();
+        cond.setId(id);
+        cond.setDeleted(AppConst.FALSE);
+        User user = userMapper.selectEntity(cond);
+        if (user == null){
+            throw ResultCode.ERROR_ON_USER_NOT_EXIST.error();
+        }
+        UserResp userResp = new UserResp();
+        BeanUtils.copyProperties(user, userResp);
+        return userResp;
+    }
 }

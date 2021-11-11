@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@MapperScan(basePackages = "org.nico.trap.mapper" , sqlSessionFactoryRef = "sqlSessionFactory")
+@MapperScan(basePackages = "com.isnico.api.mapper" , sqlSessionFactoryRef = "sqlSessionFactory")
 public class MybatisConfig {
 
     @Bean(name = "sqlSessionFactory")
