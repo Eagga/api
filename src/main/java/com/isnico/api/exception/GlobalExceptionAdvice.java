@@ -30,7 +30,7 @@ public class GlobalExceptionAdvice {
 	@ExceptionHandler(value = ConstraintViolationException.class)
 	public Result<?> errorHandler(ConstraintViolationException ex) {
 		ex.printStackTrace();
-		return new Result<>(ResultCode.ERROR).setMsg(ex.getMessage());
+		return Result.fail(ResultCode.ERROR.getCode(), ex.getMessage());
 	}
 
 }

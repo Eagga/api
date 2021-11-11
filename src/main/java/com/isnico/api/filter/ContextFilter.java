@@ -49,6 +49,7 @@ public class ContextFilter implements Filter {
                 traceId = StringUtil.uuid();
             }
             MDC.put("traceId", traceId);
+            chain.doFilter(request, response);
         } finally {
             Context.clear();
             MDC.clear();

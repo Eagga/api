@@ -4,25 +4,20 @@ import com.isnico.api.exception.BusinessException;
 
 public enum ResultCode {
 
-	SUCCESS("000000", "请求成功"),
-	ERROR_ON_TOKEN_INVALID("400001", "无效令牌"),
-	ERROR("500000", "系统错误"),
-	ERROR_ON_PROCESS("500001", "解析错误"),
-	ERROR_ON_INSERT("500002", "插入失败"),
-	ERROR_ON_AUTH_CODE_NOT_EXIST("500004", "验证码失效"),
-	ERROR_ON_AUTH_CODE_AUTH_FAIL("500005", "验证码错误"),
-	ERROR_ON_USER_NOT_EXIST("500006", "账户不存在"),
-	ERROR_ON_USER_PASSWORD_ERROR("500007", "账号或密码错误"),
-	ERROR_ON_DATA_NOT_EXIST("500008", "数据不存在"),
-	ERROR_ON_USER_IDENTITY_MISMATCH("500009", "用户身份不匹配"),
-	ERROR_ON_UPDATE("500010", "更新失败"),
+	SUCCESS(0, "请求成功"),
+	ERROR_ON_TOKEN_INVALID(401, "无效令牌"),
+	ERROR(500, "系统错误"),
+
+	ERROR_ON_AUTH_CODE_AUTH_FAIL(100001, "验证码错误"),
+	ERROR_ON_USER_NOT_EXIST(100002, "账户不存在"),
+	ERROR_ON_USER_PASSWORD_ERROR(100003, "账号或密码错误"),
 	;
 	
-	private String code;
+	private int code;
 	
 	private String msg;
 
-	private ResultCode(String code, String msg) {
+	private ResultCode(int code, String msg) {
 		this.code = code;
 		this.msg = msg;
 	}
@@ -31,11 +26,11 @@ public enum ResultCode {
 		return new BusinessException(this);
 	}
 
-	public final String getCode() {
+	public final int getCode() {
 		return code;
 	}
 
-	public final void setCode(String code) {
+	public final void setCode(int code) {
 		this.code = code;
 	}
 

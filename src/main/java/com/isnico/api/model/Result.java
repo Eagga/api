@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class Result<T> {
 
-	private String code;
+	private int code;
 	
 	private String msg;
 	
@@ -39,7 +39,7 @@ public class Result<T> {
 		return  new Result<T>(code);
 	}
 
-	public static <T> Result<T> fail(String code, String msg){
+	public static <T> Result<T> fail(int code, String msg){
 		Result<T> result = new Result<T>();
 		result.setCode(code);
 		result.setMsg(msg);
