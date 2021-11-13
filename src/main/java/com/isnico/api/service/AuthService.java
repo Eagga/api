@@ -55,6 +55,7 @@ public class AuthService {
 		LoginResp resp = new LoginResp();
 		resp.setId(user.getId());
 		resp.setName(user.getName());
+		resp.setScore(user.getScore());
 		resp.setUsername(user.getUsername());
 		resp.setToken(StringUtil.random(48));
 		redisUtil.set(AppConst.USER_TOKEN + resp.getToken(), Noson.reversal(resp), 15, TimeUnit.DAYS);

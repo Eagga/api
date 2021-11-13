@@ -12,6 +12,9 @@ public class LoginResp {
 	@ApiModelProperty("名称")
 	private String name;
 
+	@ApiModelProperty("积分")
+	private Long score;
+
 	@ApiModelProperty("用户昵称")
 	private String username;
 
